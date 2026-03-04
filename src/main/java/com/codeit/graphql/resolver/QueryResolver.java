@@ -27,8 +27,8 @@ public class QueryResolver {
     /**
      * 모든 도서 조회
      */
-    @QueryMapping
-    public List<Book> books() {
+    @QueryMapping(name = "books")
+    public List<Book> getAllBooks() {
         log.info("GraphQL Query: books");
         return bookService.getAllBooksWithAuthor();
     }
@@ -69,9 +69,9 @@ public class QueryResolver {
 
     // 저자별 도서 조회
     @QueryMapping
-    public List<Book> booksByAuthor(@Argument Long id) {
-        log.info("GraphQL Query: booksByAuthor(authorId={})", id);
-        return bookService.getBooksByAuthor(id);
+    public List<Book> booksByAuthor(@Argument Long authorId) {
+        log.info("GraphQL Query: booksByAuthor(authorId={})", authorId);
+        return bookService.getBooksByAuthor(authorId);
     }
 
 }

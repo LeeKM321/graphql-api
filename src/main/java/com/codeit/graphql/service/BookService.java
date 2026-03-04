@@ -3,6 +3,7 @@ package com.codeit.graphql.service;
 import com.codeit.graphql.entity.Author;
 import com.codeit.graphql.entity.Book;
 import com.codeit.graphql.input.CreateBookInput;
+import com.codeit.graphql.input.UpdateBookInput;
 import com.codeit.graphql.repository.AuthorRepository;
 import com.codeit.graphql.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
