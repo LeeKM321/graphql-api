@@ -33,6 +33,8 @@ spring:
     graphiql:
       enabled: true
       path: /graphiql
+    websocket:
+      path: /graphql
     # Schema 위치
     schema:
       locations: classpath:graphql/

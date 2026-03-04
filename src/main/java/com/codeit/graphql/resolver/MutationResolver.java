@@ -22,6 +22,7 @@ public class MutationResolver {
 
     private final BookService bookService;
     private final AuthorService authorService;
+    private final BookSubscriptionResolver subscriptionResolver;
 
     /**
      * 도서 생성
@@ -29,7 +30,12 @@ public class MutationResolver {
     @MutationMapping
     public Book createBook(@Argument CreateBookInput input) {
         log.info("GraphQL Mutation: createBook({})", input);
-        return bookService.createBook(input);
+        Book book = bookService.createBook(input);
+
+        // 이벤트 발행
+        subscriptionResolver.publishBookAdded(book);
+
+        return book;
     }
 
     /**
