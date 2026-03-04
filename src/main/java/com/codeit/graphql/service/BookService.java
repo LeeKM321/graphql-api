@@ -2,6 +2,7 @@ package com.codeit.graphql.service;
 
 import com.codeit.graphql.entity.Author;
 import com.codeit.graphql.entity.Book;
+import com.codeit.graphql.exception.BookNotFoundException;
 import com.codeit.graphql.input.CreateBookInput;
 import com.codeit.graphql.input.UpdateBookInput;
 import com.codeit.graphql.repository.AuthorRepository;
@@ -44,7 +45,7 @@ public class BookService {
     public Book getBookById(Long id) {
         log.info("📖 도서 조회: ID={}", id);
         return bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("도서를 찾을 수 없습니다: " + id));
+                .orElseThrow(() -> new BookNotFoundException(id));
     }
 
     /**
