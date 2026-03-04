@@ -7,10 +7,13 @@ import com.codeit.graphql.service.BookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * GraphQL Query Resolver
@@ -30,7 +33,42 @@ public class QueryResolver {
     @QueryMapping(name = "books")
     public List<Book> getAllBooks() {
         log.info("GraphQL Query: books");
-        return bookService.getAllBooksWithAuthor();
+        return bookService.getAllBooks();
+    }
+
+    @BatchMapping(typeName = "Book", field = "author")
+    public Map<Book, Author> author(List<Book> books) {
+        log.info("도서 {}권에 대한 작가 정보를 일괄 조회!", books.size());
+
+        // 1. 여러 권의 책에서 작가 ID만 뽑아서 중복 없는 리스트로 만듭니다.
+        List<Long> authorIds = books.stream()
+                .map(book -> book.getAuthor().getId())
+                .distinct()
+                .collect(Collectors.toList());
+
+        // 2. 작가 아이디 목록을 넘겨서 모든 작가를 한번에 찾아오기
+        List<Author> authors = authorService.findAllById(authorIds);
+
+        // 3. 가져온 작가들을 책과 짝지어서 넘겨줍니다.
+        /*
+        return books.stream()
+                .collect(Collectors.toMap(
+                        book -> book,
+                        book -> authors.stream()
+                                .filter(author -> author.getId().equals(book.getAuthor().getId()))
+                                .findFirst()
+                                .orElse(null)
+                ));
+        */
+
+        Map<Long, Author> authorMap = authors.stream()
+                .collect(Collectors.toMap(Author::getId, author -> author));
+
+        return books.stream()
+                .collect(Collectors.toMap(
+                        book -> book,
+                        book -> authorMap.get(book.getAuthor().getId())
+                ));
     }
 
     /**

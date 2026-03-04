@@ -116,4 +116,24 @@ public class AuthorService {
     }
 
 
+    public List<Author> findAllById(List<Long> authorIds) {
+        // WHERE id IN (?,?,?...) 쿼리를 만들어 줌.
+        return authorRepository.findAllById(authorIds);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
